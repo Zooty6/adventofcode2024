@@ -20,14 +20,12 @@ public class Office {
     public int measureTotalDistance() {
         sortLists();
         return IntStream.range(0, listA.size())
-                .parallel()
                 .map(index -> Math.abs(listA.get(index) - listB.get(index)))
                 .sum();
     }
 
     public int measureSimilarity() {
         return listA.stream()
-                .parallel()
                 .mapToInt(idA -> idA * occurrenceB.getOrDefault(idA, 0))
                 .sum();
     }
