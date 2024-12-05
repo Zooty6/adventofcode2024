@@ -24,7 +24,7 @@ public class AdventOfCode {
                 .filter(filterByAppArguments(args))
                 .forEach(day -> {
                     long startMillis = System.currentTimeMillis();
-                    System.out.printf("Day %d solutions:%n    1: %s, 2: %s (took %d milliseconds)%n", //NOSONAR
+                    System.out.printf("Day %d solutions:%n    Part 1: %-12s Part 2: %s (took %d milliseconds)%n", //NOSONAR
                             day.getDay(),
                             invoke("getSolution1", day),
                             invoke("getSolution2", day),
