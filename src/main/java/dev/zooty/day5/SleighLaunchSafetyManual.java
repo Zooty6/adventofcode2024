@@ -14,14 +14,14 @@ public class SleighLaunchSafetyManual {
 
     public int getCorrectlyOrderedNumber() {
         return updates.stream()
-                .filter(update -> update.correct(rules))
+                .filter(update -> update.isCorrect(rules))
                 .mapToInt(Update::getMiddlePageNumber)
                 .sum();
     }
 
     public int getFixedNumber() {
         return updates.stream()
-                .filter(update -> !update.correct(rules))
+                .filter(update -> !update.isCorrect(rules))
                 .map(update -> update.fixWithRuleset(rules))
                 .mapToInt(Update::getMiddlePageNumber)
                 .sum();

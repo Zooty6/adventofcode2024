@@ -18,17 +18,17 @@ public class Update {
         return pages.get(pages.size() / 2);
     }
 
-    public boolean correct(List<OrderingRule> rules) {
+    public boolean isCorrect(List<OrderingRule> rules) {
         return rules.stream()
-                .allMatch(this::correctForRule);
+                .allMatch(this::isCorrectForRule);
     }
 
     public Update fixWithRuleset(List<OrderingRule> rules) {
         do {
             rules.stream()
-                    .filter(rule -> !correctForRule(rule))
+                    .filter(rule -> !isCorrectForRule(rule))
                     .forEach(this::fixRuleOnList);
-        } while (!correct(rules));
+        } while (!isCorrect(rules));
         return this;
     }
 
@@ -40,7 +40,7 @@ public class Update {
         pages.set(secondPagePosition, rule.getFirstPage());
     }
 
-    private boolean correctForRule(OrderingRule rule) {
+    private boolean isCorrectForRule(OrderingRule rule) {
         var firstPagePosition = pages.indexOf(rule.getFirstPage());
         var secondPagePosition = pages.indexOf(rule.getSecondPage());
 
