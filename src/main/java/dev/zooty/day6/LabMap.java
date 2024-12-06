@@ -38,8 +38,8 @@ public class LabMap {
     public int getNumberOfPossibleNewObstructions() {
         traverse();
         return (int) visitedPositions.stream()
-                .map(this::isLoopingWithNewObstruction)
-                .filter(looping -> looping)
+                .parallel()
+                .filter(this::isLoopingWithNewObstruction)
                 .count();
     }
 
