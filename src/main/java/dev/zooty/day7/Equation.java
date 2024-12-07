@@ -39,12 +39,8 @@ public class Equation {
         while (accumulated <= testValue && index < operands.size()) {
             accumulated = operatorPermutations.get(index - 1).doOperation(accumulated, operands.get(index));
             index++;
-            if (accumulated == testValue) {
-//                print(operatorPermutations);
-                return true;
-            }
         }
-        return false;
+        return testValue == accumulated;
     }
 
     private void print(List<Operator> operatorPermutations) {
