@@ -32,22 +32,16 @@ public class Disk {
     }
 
     private boolean isFragmented() {
-        return !IntStream.range(0, diskBlocks.size())
+        return IntStream.range(1, diskBlocks.size())
                 .parallel()
-                .allMatch(index -> switch (diskBlocks.get(index)) {
-                    case File ignored1 -> IntStream.range(0, index)
-                            .parallel()
-                            .allMatch(beforeIndex -> diskBlocks.get(beforeIndex) instanceof File);
-                    case Free ignored -> IntStream.range(index + 1, diskBlocks.size())
-                            .parallel()
-                            .allMatch(afterIndex -> diskBlocks.get(afterIndex) instanceof Free);
-                });
+                .anyMatch(index -> diskBlocks.get(index) instanceof File && diskBlocks.get(index -1) instanceof Free);
+
     }
 
-    public int getChecksum() {
+    public long getChecksum() {
         return IntStream.range(0, diskBlocks.size())
                 .filter(index -> diskBlocks.get(index) instanceof File)
-                .map(index -> index * ((File) diskBlocks.get(index)).getId())
+                .mapToLong(index -> (long) index * ((File) diskBlocks.get(index)).getId())
                 .sum();
     }
 
