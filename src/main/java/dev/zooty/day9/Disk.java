@@ -9,15 +9,15 @@ import java.util.stream.IntStream;
 
 public class Disk {
     private final List<Block> diskBlocks = new ArrayList<>();
+    private final AtomicInteger fileId = new AtomicInteger();
 
     public Disk(String input) {
-        AtomicInteger fileId = new AtomicInteger();
         AtomicBoolean isFile = new AtomicBoolean(true);
         input.chars().forEach(blockLength -> parseBlock(fileId, isFile, blockLength));
     }
 
     public void doDeFragment() {
-        while(isFragmented()) {
+        while (isFragmented()) {
             var blockToMove = diskBlocks.stream()
                     .filter(File.class::isInstance)
                     .reduce((block, block2) -> block2)
@@ -31,11 +31,52 @@ public class Disk {
         }
     }
 
+    public void doQuickDeFragment() {
+        fileId.decrementAndGet();
+        do {
+            moveForward(getNextFileBlocksToMove());
+        } while (fileId.get() > 0);
+    }
+
+    private void moveForward(List<File> blocksToMove) {
+        var freeSpaceStartIndex = findFreeSpaceFor(blocksToMove);
+        if (freeSpaceStartIndex == -1) {
+            return;
+        }
+        blocksToMove.forEach(file -> diskBlocks.set(diskBlocks.indexOf(file), new Free()));
+        IntStream.range(freeSpaceStartIndex, freeSpaceStartIndex + blocksToMove.size())
+                .forEach(index -> diskBlocks.set(index, blocksToMove.get(index - freeSpaceStartIndex)));
+    }
+
+    private int findFreeSpaceFor(List<File> filesToMove) {
+        int movingBlockStartIndex = diskBlocks.indexOf(filesToMove.getFirst());
+        int numberOfBlocksToMove = filesToMove.size();
+
+        return IntStream.range(0, movingBlockStartIndex)
+                .filter(startIndex -> hasEnoughFreeSpaceAt(startIndex, numberOfBlocksToMove))
+                .findFirst()
+                .orElse(-1);
+    }
+
+    private boolean hasEnoughFreeSpaceAt(int startIndex, int requiredSize) {
+        return IntStream.range(startIndex, startIndex + requiredSize)
+                .allMatch(index -> index < diskBlocks.size() && diskBlocks.get(index) instanceof Free);
+    }
+
+    private List<File> getNextFileBlocksToMove() {
+        var files = diskBlocks.parallelStream()
+                .filter(File.class::isInstance)
+                .map(File.class::cast)
+                .filter(file -> file.getId() == fileId.get())
+                .toList();
+        fileId.decrementAndGet();
+        return files;
+    }
+
     private boolean isFragmented() {
         return IntStream.range(1, diskBlocks.size())
                 .parallel()
-                .anyMatch(index -> diskBlocks.get(index) instanceof File && diskBlocks.get(index -1) instanceof Free);
-
+                .anyMatch(index -> diskBlocks.get(index) instanceof File && diskBlocks.get(index - 1) instanceof Free);
     }
 
     public long getChecksum() {

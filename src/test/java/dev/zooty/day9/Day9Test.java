@@ -1,6 +1,5 @@
-package dev.zooty.day8;
+package dev.zooty.day9;
 
-import dev.zooty.day9.Day9;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,5 +13,6 @@ class Day9Test {
 
     @Test
     void getSolution2() {
+        assertEquals("2858", new Day9().getSolution2());
     }
 }
