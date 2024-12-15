@@ -65,10 +65,6 @@ public class Plot {
     }
 
     public int getSidesOfRegion(Set<Plot> calculatedPlots) {
-        if (calculatedPlots.contains(this)) {
-            return 0;
-        }
-
         HashSet<Plot> calculatedUpSideFencePlots = new HashSet<>();
         HashSet<Plot> calculatedRightSideFencePlots = new HashSet<>();
         HashSet<Plot> calculatedDownSideFencePlots = new HashSet<>();
@@ -97,28 +93,28 @@ public class Plot {
         price += addDownSideFence(calculatedDownSideFencePlots);
         price += addLeftSideFence(calculatedLeftSideFencePlots);
 
-        if (upPlot != null && !calculatedUpSideFencePlots.contains(upPlot)) {
+        if (upPlot != null && !calculatedPlots.contains(upPlot)) {
             price += upPlot.getSidesOfRegion(calculatedPlots,
                     calculatedUpSideFencePlots,
                     calculatedRightSideFencePlots,
                     calculatedDownSideFencePlots,
                     calculatedLeftSideFencePlots);
         }
-        if (rightPlot != null && !calculatedRightSideFencePlots.contains(rightPlot)) {
+        if (rightPlot != null && !calculatedPlots.contains(rightPlot)) {
             price += rightPlot.getSidesOfRegion(calculatedPlots,
                     calculatedUpSideFencePlots,
                     calculatedRightSideFencePlots,
                     calculatedDownSideFencePlots,
                     calculatedLeftSideFencePlots);
         }
-        if (downPlot != null && !calculatedDownSideFencePlots.contains(downPlot)) {
+        if (downPlot != null && !calculatedPlots.contains(downPlot)) {
             price += downPlot.getSidesOfRegion(calculatedPlots,
                     calculatedUpSideFencePlots,
                     calculatedRightSideFencePlots,
                     calculatedDownSideFencePlots,
                     calculatedLeftSideFencePlots);
         }
-        if (leftPlot != null && !calculatedLeftSideFencePlots.contains(leftPlot)) {
+        if (leftPlot != null && !calculatedPlots.contains(leftPlot)) {
             price += leftPlot.getSidesOfRegion(calculatedPlots,
                     calculatedUpSideFencePlots,
                     calculatedRightSideFencePlots,
